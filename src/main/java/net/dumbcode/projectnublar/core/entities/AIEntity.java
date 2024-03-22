@@ -9,6 +9,9 @@ import java.util.List;
 public interface AIEntity {
     /**
      * Ported from DumbLibrary utils/AIUtils.java .traverseXZ(int, int, int, int)
+     * <p>
+     * Find all block positions within a radius of a center point at the cost of accuracy.
+     * Use {@link AIEntity#findBlockPositionsXZ(int, int, int, int)} for accurate results.
      * @param centerX
      * @param ecsY
      * @param centerZ
@@ -29,6 +32,9 @@ public interface AIEntity {
 
     /**
      * Ported from DumbLibrary utils/AIUtils.java .traverseXZ(int, int, int, int)
+     * <p>
+     * Find all block positions within a radius of a center point.
+     * If you do not need accurate results, use {@link AIEntity#fastFindBlockPositionsXZ(int, int, int, int)}.
      * @param centerX
      * @param ecsY
      * @param centerZ
