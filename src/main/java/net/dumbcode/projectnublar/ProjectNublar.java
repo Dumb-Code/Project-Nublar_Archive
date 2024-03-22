@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import static net.dumbcode.projectnublar.Registries.*;
 
@@ -26,7 +28,6 @@ public class ProjectNublar {
     // Create a Deferred Register to hold Blocks which will all be registered under the "projectnublar" namespace
     public ProjectNublar() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
@@ -41,7 +42,8 @@ public class ProjectNublar {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
     }
 
-    public static ResourceLocation resourceLocation(String path) {
+    @Contract("_ -> new")
+    public static @NotNull ResourceLocation resourceLocation(String path) {
         return new ResourceLocation(MODID, path);
     }
 }
