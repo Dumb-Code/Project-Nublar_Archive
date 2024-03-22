@@ -1,6 +1,6 @@
 package net.dumbcode.projectnublar.core.exceptions;
 
-public class UtilityClassException extends RuntimeException {
+public class UtilityClassException extends IllegalStateException {
     private static final String DEFAULT_MESSAGE = "This is a utility class and cannot be instantiated";
 
     public UtilityClassException() {
@@ -17,14 +17,6 @@ public class UtilityClassException extends RuntimeException {
 
     public UtilityClassException(Throwable cause) {
         super(DEFAULT_MESSAGE, cause);
-    }
-
-    public UtilityClassException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
-    public UtilityClassException(Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(DEFAULT_MESSAGE, cause, enableSuppression, writableStackTrace);
     }
 
 }
