@@ -3,6 +3,7 @@ package net.dumbcode.projectnublar;
 import net.dumbcode.projectnublar.config.ClientConfig;
 import com.mojang.logging.LogUtils;
 import net.dumbcode.projectnublar.config.ServerConfig;
+import net.dumbcode.projectnublar.core.registry.Registrar;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,17 +26,19 @@ public class ProjectNublar {
     public ProjectNublar() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the Deferred Register to the mod event bus so blocks get registered
-        Registries.BLOCKS.register(modEventBus);
+        Registrar.BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
-        Registries.ITEMS.register(modEventBus);
+        Registrar.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
-        Registries.CREATIVE_MODE_TABS.register(modEventBus);
+        Registrar.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+
+        LOGGER.info("Hello from Project Nublar!");
     }
 
     @Contract("_ -> new")

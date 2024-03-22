@@ -1,5 +1,7 @@
-package net.dumbcode.projectnublar;
+package net.dumbcode.projectnublar.core.registry;
 
+import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -8,13 +10,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MODID;
 
-public final class Registries {
+public final class Registrar {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "projectnublar" namespace
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB, MODID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    private Registries() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    private Registrar() {
+        throw new UtilityClassException();
     }
 }
