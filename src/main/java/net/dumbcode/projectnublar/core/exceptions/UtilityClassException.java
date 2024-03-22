@@ -1,6 +1,6 @@
 package net.dumbcode.projectnublar.core.exceptions;
 
-public class UtilityClassException extends IllegalStateException {
+public class UtilityClassException extends UnsupportedOperationException {
     private static final String DEFAULT_MESSAGE = "This is a utility class and cannot be instantiated";
 
     public UtilityClassException() {
