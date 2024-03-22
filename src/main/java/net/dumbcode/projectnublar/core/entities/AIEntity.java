@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface EntityWithAI {
+public interface AIEntity {
     /**
      * Ported from DumbLibrary utils/AIUtils.java .traverseXZ(int, int, int, int)
      * @param centerX
