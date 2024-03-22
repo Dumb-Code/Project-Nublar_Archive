@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches: # Specify your branches here
-      - * # all branches
+      - '*' # all branches
 
 jobs:
   qodana:
