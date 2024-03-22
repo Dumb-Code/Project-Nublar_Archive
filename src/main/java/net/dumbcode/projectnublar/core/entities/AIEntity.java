@@ -12,11 +12,11 @@ public interface AIEntity {
      * <p>
      * Find all block positions within a radius of a center point at the cost of accuracy.
      * Use {@link AIEntity#findBlockPositionsXZ(int, int, int, int)} for accurate results.
-     * @param centerX
-     * @param ecsY
-     * @param centerZ
-     * @param radius
-     * @return
+     * @param centerX The x-coordinate of the center point.
+     * @param ecsY The y-coordinate of the center point.
+     * @param centerZ The z-coordinate of the center point.
+     * @param radius The radius of the circle.
+     * @return A list of block positions within the radius of the center point.
      */
     default List<BlockPos> fastFindBlockPositionsXZ(int centerX, int ecsY, int centerZ, int radius) {
         List<BlockPos> blockPos = new ArrayList<>();
@@ -35,11 +35,11 @@ public interface AIEntity {
      * <p>
      * Find all block positions within a radius of a center point.
      * If you do not need accurate results, use {@link AIEntity#fastFindBlockPositionsXZ(int, int, int, int)}.
-     * @param centerX
-     * @param ecsY
-     * @param centerZ
-     * @param radius
-     * @return
+     * @param centerX The x-coordinate of the center point.
+     * @param ecsY The y-coordinate of the center point.
+     * @param centerZ The z-coordinate of the center point.
+     * @param radius The radius of the circle.
+     * @return A list of block positions within the radius of the center point.
      */
     default List<BlockPos> findBlockPositionsXZ(int centerX, int ecsY, int centerZ, int radius) {
         List<BlockPos> blockPos = new ArrayList<>();
