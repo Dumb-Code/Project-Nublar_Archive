@@ -1,7 +1,7 @@
 package net.dumbcode.projectnublar;
 
-import com.mojang.logging.LogUtils;
 import net.dumbcode.projectnublar.config.ClientConfig;
+import com.mojang.logging.LogUtils;
 import net.dumbcode.projectnublar.config.ServerConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,8 +14,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import static net.dumbcode.projectnublar.Registries.*;
-
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ProjectNublar.MODID)
 public class ProjectNublar {
@@ -27,11 +25,11 @@ public class ProjectNublar {
     public ProjectNublar() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the Deferred Register to the mod event bus so blocks get registered
-        BLOCKS.register(modEventBus);
+        Registries.BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
-        ITEMS.register(modEventBus);
+        Registries.ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
-        CREATIVE_MODE_TABS.register(modEventBus);
+        Registries.CREATIVE_MODE_TABS.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

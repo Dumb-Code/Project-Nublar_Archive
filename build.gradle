@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.21,6.3)'
 
     // This will eventually be removed, but for continued quick development
     // it has been installed.
@@ -24,6 +24,7 @@ plugins {
     // - Delombok
     // - All annotations
     id "io.freefair.lombok" version "8.6"
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -53,12 +54,12 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: mapping_channel, version: mapping_version
+    mappings channel: 'parchment', version: '2024.02.25-1.20.4'
 
     // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
     // In most cases, it is not necessary to enable.
     // enableEclipsePrepareRuns = true
-    // enableIdeaPrepareRuns = true
+    enableIdeaPrepareRuns = true
 
     // This property allows configuring Gradle's ProcessResources task(s) to run on IDE output locations before launching the game.
     // It is REQUIRED to be set to true for this template to function.
@@ -68,7 +69,7 @@ minecraft {
     // When true, this property will add the folder name of all declared run configurations to generated IDE run configurations.
     // The folder name can be set on a run configuration using the "folderName" property.
     // By default, the folder name of a run configuration is the name of the Gradle project containing it.
-    // generateRunFolders = true
+    generateRunFolders = true
 
     // This property enables access transformers for use in development.
     // They will be applied to the Minecraft artifact.
