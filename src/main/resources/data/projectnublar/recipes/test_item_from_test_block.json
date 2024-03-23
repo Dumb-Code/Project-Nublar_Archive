@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "projectnublar:test_block"
+    }
+  ],
+  "result": {
+    "item": "projectnublar:test_item",
+    "count": 9
+  }
+}
