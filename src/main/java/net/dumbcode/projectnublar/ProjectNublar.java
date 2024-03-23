@@ -16,23 +16,18 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(ProjectNublar.MODID)
+@Mod(ProjectNublar.MOD_ID)
 public class ProjectNublar {
 
-    public static final String MODID = "projectnublar";
+    public static final String MOD_ID = "projectnublar";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     // Create a Deferred Register to hold Blocks which will all be registered under the "projectnublar" namespace
     public ProjectNublar() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        // Register the Deferred Register to the mod event bus so blocks get registered
-        Registrar.BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
-        Registrar.ITEMS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
-        Registrar.CREATIVE_MODE_TABS.register(modEventBus);
 
-        // Register ourselves for server and other game events we are interested in
+        Registrar.register(modEventBus);
+
         MinecraftForge.EVENT_BUS.register(this);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
@@ -43,6 +38,6 @@ public class ProjectNublar {
 
     @Contract("_ -> new")
     public static @NotNull ResourceLocation resourceLocation(String path) {
-        return new ResourceLocation(MODID, path);
+        return new ResourceLocation(MOD_ID, path);
     }
 }
