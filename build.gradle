@@ -13,17 +13,6 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.21,6.3)'
-
-    // This will eventually be removed, but for continued quick development
-    // it has been installed.
-    //
-    // Before pushing any files to GitHub, ensure you have delomboked your code.
-    // You can do this by
-    // - Right click on the class
-    // - Refactor
-    // - Delombok
-    // - All annotations
-    id "io.freefair.lombok" version "8.6"
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
