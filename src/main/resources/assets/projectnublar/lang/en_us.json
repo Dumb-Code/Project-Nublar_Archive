@@ -1,5 +1,10 @@
 {
   "block.projectnublar.test_block": "Test Block",
+  "block.projectnublar.test_ore_block": "Test Ore Block",
+  "block.projectnublar.sound_block": "Sound Block",
   "item.projectnublar.test_item": "Test Item",
+  "item.projectnublar.ore_detector": "Ore Detector",
+  "item.projectnublar.strawberry": "Strawberry",
+  "item.projectnublar.acorn": "Acorn",
   "creativetab.all_items": "Project Nublar"
 }
