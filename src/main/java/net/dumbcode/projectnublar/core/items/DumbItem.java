@@ -1,11 +1,14 @@
 package net.dumbcode.projectnublar.core.items;
 
-import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTabs;
+import net.dumbcode.projectnublar.core.creativetab.ICreativeTabElement;
+import net.minecraft.world.item.Item;
 
-import java.util.List;
+public abstract class DumbItem extends Item implements ICreativeTabElement {
+    protected DumbItem() {
+        super(new Item.Properties());
+    }
 
-public interface DumbItem {
-    default List<DumbCreativeTabs.CreativeTabs> getCreativeTabs() {
-        return List.of(DumbCreativeTabs.CreativeTabs.ALL_ITEMS);
+    protected DumbItem(Properties properties) {
+        super(properties);
     }
 }

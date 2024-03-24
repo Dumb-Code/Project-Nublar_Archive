@@ -11,7 +11,7 @@ public class AllItemsCreativeTab extends DumbCreativeTab {
     public AllItemsCreativeTab() {
         super(
             ENUM_REFERENCE,
-            () -> new ItemStack(DumbItems.Items.TEST_ITEM.get())
+            () -> new ItemStack(DumbItems.Items.TEST_ITEM.getRegistry().item().get())
         );
     }
 }

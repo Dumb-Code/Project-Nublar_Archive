@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.UnaryOperator;
 
-public class TestItem extends Item implements DumbItem {
+public class TestItem extends DumbItem {
     public TestItem() {
         super(new Item.Properties());
     }

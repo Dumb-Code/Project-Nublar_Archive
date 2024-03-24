@@ -1,7 +1,7 @@
 package net.dumbcode.projectnublar.core.registry;
 
 import net.dumbcode.projectnublar.ProjectNublar;
-import net.dumbcode.projectnublar.core.blocks.DumbBlock;
+import net.dumbcode.projectnublar.core.blocks.IDumbBlock;
 import net.dumbcode.projectnublar.core.blocks.DumbBlocks;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTab;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTabs;
@@ -41,7 +41,7 @@ public class Registrar {
     public static void register(@NotNull RegisterEvent event) {
         event.register(Registrar.BLOCKS.getRegistryKey(), helper -> {
             for (DumbBlocks.Blocks block : DumbBlocks.Blocks.values()) {
-                Class<? extends DumbBlock> blockClass = block.getBlockClass();
+                Class<? extends IDumbBlock> blockClass = block.getBlockClass();
                 Block instance;
                 try {
                     instance = (Block) blockClass.getDeclaredConstructor().newInstance();
@@ -53,8 +53,8 @@ public class Registrar {
         });
         event.register(Registrar.ITEMS.getRegistryKey(), helper -> {
             for (DumbBlocks.Blocks block : DumbBlocks.Blocks.values()) {
-                Block instance = block.get();
-                DumbBlock dumbBlock = (DumbBlock) instance;
+                Block instance = block.getRegistry().block().get();
+                IDumbBlock dumbBlock = (IDumbBlock) instance;
                 Item item = dumbBlock.createItem();
                 helper.register(new ResourceLocation(ProjectNublar.MOD_ID, block.getRegisterName()), item);
             }
@@ -62,7 +62,7 @@ public class Registrar {
                 Class<? extends DumbItem> itemClass = item.getItemClass();
                 Item instance;
                 try {
-                    instance = (Item) itemClass.getDeclaredConstructor().newInstance();
+                    instance = itemClass.getDeclaredConstructor().newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     throw new RuntimeException(e);
                 }

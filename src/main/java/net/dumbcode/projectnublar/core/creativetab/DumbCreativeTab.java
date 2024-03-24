@@ -1,6 +1,6 @@
 package net.dumbcode.projectnublar.core.creativetab;
 
-import net.dumbcode.projectnublar.core.blocks.DumbBlock;
+import net.dumbcode.projectnublar.core.blocks.IDumbBlock;
 import net.dumbcode.projectnublar.core.blocks.DumbBlocks;
 import net.dumbcode.projectnublar.core.items.DumbItem;
 import net.dumbcode.projectnublar.core.items.DumbItems;
@@ -26,7 +26,7 @@ public abstract class DumbCreativeTab {
             .displayItems((params, output) -> {
                 for (RegistryObject<Block> registryBlock : DumbBlocks.Blocks.registryBlocks()) {
                     Block block = registryBlock.get();
-                    DumbBlock dumbBlock = (DumbBlock) block;
+                    IDumbBlock dumbBlock = (IDumbBlock) block;
                     if (!dumbBlock.getCreativeTabs().contains(enumReference)) continue;
                     output.accept(block);
                 }
