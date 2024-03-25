@@ -10,7 +10,7 @@ public final class MathsUtil {
     }
 
     public static double fastInvSqrt(double x) {
-        double xhalf = 0.5d * x;
+        final double xhalf = 0.5d * x;
         long i = Double.doubleToLongBits(x);
         i = 0x5fe6ec85e7de30daL - (i >> 1);
         x = Double.longBitsToDouble(i);
@@ -19,7 +19,7 @@ public final class MathsUtil {
     }
 
     public static double fastInvSqrt(double x, int iterations) {
-        double xhalf = 0.5d * x;
+        final double xhalf = 0.5d * x;
         long i = Double.doubleToLongBits(x);
         i = 0x5fe6ec85e7de30daL - (i >> 1);
         x = Double.longBitsToDouble(i);
@@ -144,7 +144,6 @@ public final class MathsUtil {
         }
         return fastSqrt(sum);
     }
-
     public static double pythagorean(double x, double y) {
         return Math.sqrt(x * x + y * y);
     }

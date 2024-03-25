@@ -13,8 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -29,6 +31,14 @@ import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 public class Registrar {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
+
+    // the difference between the two is that FLUID registry defines the behaviour of a fluid (projectnublar:examplefluid)
+    // FLUIDS registry defines how projectnublar:examplefluid ticks, animates, creates a bucket etc.
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MOD_ID);
+
+    // FLUID_TYPES defines minecraft constraints of the projectnublar:examplefluid. More like fluid's config. It defines properties like
+    // viscosity, can fluid drown, can it be passed on a boat, extinguish fire etc.
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.FLUID_TYPES, MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
     public static void register(@NotNull IEventBus bus) {
