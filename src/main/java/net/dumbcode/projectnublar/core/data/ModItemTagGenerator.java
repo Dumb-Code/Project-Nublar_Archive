@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.@NotNull Provider provider) {
         for (DumbTags.Items item : DumbTags.Items.values()) {
             item.getTagBuilderOperator().apply(tag(item.getTagKey()));
         }
@@ -39,11 +40,11 @@ public class ModItemTagGenerator extends ItemTagsProvider {
                 TagKey<Item> tagKey = (TagKey<Item>) field.get(null);
                 if (tagKey == null) continue;
                 Item[] itemsArray = Arrays.stream(DumbItems.Items.values())
-                    .filter(x -> x.getTags().itemTags().contains(tagKey))
+                    .filter(x -> x.getMetadata().tags().itemTags().contains(tagKey))
                     .map(x -> x.getRegistry().item().get())
                     .toArray(Item[]::new);
                 Item[] blocksArray = Arrays.stream(DumbBlocks.Blocks.values())
-                    .filter(x -> x.getTags().itemTags().contains(tagKey))
+                    .filter(x -> x.getMetadata().tags().itemTags().contains(tagKey))
                     .map(x -> x.getRegistry().item().get())
                     .toArray(Item[]::new);
                 Item[] array = ArrayUtils.addAll(itemsArray, blocksArray);

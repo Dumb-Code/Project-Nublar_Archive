@@ -17,71 +17,87 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
-public class DumbItems {
+public final class DumbItems {
     public enum Items {
-        TEST_ITEM(
-            TestItem.class,
-            recipe -> recipe.nineBlockStorage(false, RecipeCategory.MISC, DumbBlocks.Blocks.TEST_BLOCK.getRegistry().block().get(), MOD_ID)
-        ),
-        ORE_DETECTOR(OreDetectorItem.class),
-        STRAWBERRY(StrawberryItem.class),
-        ACORN(AcornItem.class);
+        TEST_ITEM(TestItem::new, metadata -> metadata),
+        ORE_DETECTOR(OreDetectorItem::new, metadata -> metadata),
+        STRAWBERRY(StrawberryItem::new, metadata -> metadata),
+        ACORN(AcornItem::new, metadata -> metadata);
 
-        private final Class<? extends DumbItem> itemClass;
+        private final Supplier<DumbItem> itemConstructor;
 
         private final Registry registry = Registry.of(
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.ITEMS.getRegistryKey(), MOD_ID)
         );
-        private final Tags tags;
-        private final List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
-
-        public static @Unmodifiable @NotNull List<Class<? extends DumbItem>> classes() {
-            return Arrays.stream(Items.values()).map(Items::getItemClass).collect(Collectors.toUnmodifiableList());
-        }
+        private final Metadata metadata;
 
         public static @Unmodifiable @NotNull List<RegistryObject<Item>> registryItems() {
             return Arrays.stream(Items.values()).map(x -> x.registry.item).toList();
         }
 
-        @SafeVarargs
-        Items(Class<? extends DumbItem> itemClass, UnaryOperator<ModRecipeProvider.Builder> ... builders) {
-            this.itemClass = itemClass;
-            this.tags = Tags.of();
-            this.recipeBuilders = Arrays.asList(builders);
+        Items(Supplier<DumbItem> itemConstructor, @NotNull UnaryOperator<Metadata.Builder> metadataBuilder) {
+            this.itemConstructor = itemConstructor;
+            this.metadata = metadataBuilder.apply(new Metadata.Builder()).build();
         }
 
-        @SafeVarargs
-        Items(Class<? extends DumbItem> itemClass, @NotNull Tags tags, UnaryOperator<ModRecipeProvider.Builder> ... builders) {
-            this.itemClass = itemClass;
-            this.tags = tags;
-            this.recipeBuilders = Arrays.asList(builders);
-        }
-
-        public Class<? extends DumbItem> getItemClass() {
-            return this.itemClass;
+        public Supplier<DumbItem> getItemConstructor() {
+            return this.itemConstructor;
         }
 
         public Registry getRegistry() {
             return this.registry;
         }
 
-        public List<UnaryOperator<ModRecipeProvider.Builder>> getRecipeBuilders() {
-            return this.recipeBuilders;
+        public Metadata getMetadata() {
+            return this.metadata;
         }
 
-        public Tags getTags() {
-            return this.tags;
-        }
-
-        public String getRegisterName() {
+        public @NotNull String getRegisterName() {
             return this.name().toLowerCase();
+        }
+    }
+
+    public record Metadata(Tags tags, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders) {
+        public static class Builder {
+            private Tags tags = Tags.of();
+            private List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
+
+            Builder() {}
+
+            public Builder tags(@NotNull UnaryOperator<Tags.Builder> tags) {
+                this.tags = tags.apply(new Tags.Builder()).build();
+                return this;
+            }
+
+            public Builder recipe(UnaryOperator<ModRecipeProvider.Builder> recipe) {
+                if (this.recipeBuilders == null) {
+                    this.recipeBuilders = new ArrayList<>();
+                }
+                this.recipeBuilders.add(recipe);
+                return this;
+            }
+
+            public Builder recipe(UnaryOperator<ModRecipeProvider.Builder> ... recipes) {
+                if (this.recipeBuilders == null) {
+                    this.recipeBuilders = Arrays.asList(recipes);
+                } else {
+                    this.recipeBuilders.addAll(Arrays.asList(recipes));
+                }
+                return this;
+            }
+
+            public Metadata build() {
+                return new Metadata(this.tags, this.recipeBuilders == null ? List.of() : this.recipeBuilders);
+            }
         }
     }
 
@@ -103,6 +119,41 @@ public class DumbItems {
 
         private static @NotNull Tags of() {
             return new Tags(List.of(), List.of());
+        }
+
+        public static final class Builder {
+            private final Tags tags;
+
+            private Builder() {
+                this.tags = Tags.of();
+            }
+
+            public Builder(@NotNull Tags tags) {
+                this.tags = tags;
+            }
+
+            public @NotNull Builder dumbItems(@NotNull DumbTags.Items... tags) {
+                return new Builder(
+                    Tags.of(
+                        Arrays.asList(tags),
+                        this.tags.itemTags
+                    )
+                );
+            }
+
+            @SafeVarargs
+            public final @NotNull Builder items(@NotNull TagKey<Item>... itemTags) {
+                return new Builder(
+                    Tags.of(
+                        this.tags.dumbItemTags,
+                        Arrays.asList(itemTags)
+                    )
+                );
+            }
+
+            public @NotNull Tags build() {
+                return this.tags;
+            }
         }
     }
 

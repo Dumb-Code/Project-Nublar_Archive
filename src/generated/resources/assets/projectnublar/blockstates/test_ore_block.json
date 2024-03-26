@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "projectnublar:block/test_ore_block"
+    }
+  }
+}

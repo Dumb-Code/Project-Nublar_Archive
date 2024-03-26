@@ -2,6 +2,7 @@ package net.dumbcode.projectnublar.core.data.loot;
 
 import net.dumbcode.projectnublar.core.blocks.DumbBlocks;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -12,10 +13,14 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ModBlockLootTables extends BlockLootSubProvider {
 
@@ -132,42 +137,53 @@ public class ModBlockLootTables extends BlockLootSubProvider {
             return provider.createPetalsDrops(block);
         }
 
-        public void addNetherVinesDropTable(Block pPlant) {
+        public LootTable.Builder addNetherVinesDropTable(Block pPlant) {
             provider.addNetherVinesDropTable(block, pPlant);
+            return null;
         }
 
         public LootTable.Builder createDoorTable() {
             return provider.createDoorTable(block);
         }
 
-        public void dropPottedContents() {
+        public LootTable.Builder dropPottedContents() {
             provider.dropPottedContents(block);
+            return null;
         }
 
-        public void otherWhenSilkTouch(Block pOther) {
+        public LootTable.Builder otherWhenSilkTouch(Block pOther) {
             provider.otherWhenSilkTouch(block, pOther);
+            return null;
         }
 
-        public void dropOther(ItemLike pItem) {
+        public LootTable.Builder dropOther(ItemLike pItem) {
             provider.dropOther(block, pItem);
+            return null;
         }
 
-        public void dropWhenSilkTouch() {
+        public LootTable.Builder dropWhenSilkTouch() {
             provider.dropWhenSilkTouch(block);
+            return null;
         }
 
-        public void dropSelf() {
+        public LootTable.Builder dropSelf() {
             provider.dropSelf(block);
+            return null;
         }
 
-        public void add(Function<Block, LootTable.Builder> pFactory) {
+        public LootTable.Builder add(Function<Block, LootTable.Builder> pFactory) {
             provider.add(block, pFactory);
+            return null;
         }
 
-        public void add(LootTable.Builder pBuilder) {
+        public LootTable.Builder add(LootTable.Builder pBuilder) {
+            provider.add(block, pBuilder);
+            return null;
+        }
+
+        private void build(LootTable.@NotNull Builder pBuilder) {
             provider.add(block, pBuilder);
         }
-
     }
 
     public ModBlockLootTables() {
@@ -178,7 +194,10 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         for (DumbBlocks.Blocks block : DumbBlocks.Blocks.values()) {
             Builder builder = new Builder(this, block.getRegistry().block().get());
-            block.getLootTableBuilder().accept(builder);
+            LootTable.Builder lootBuilder = block.getMetadata().lootTableBuilder().apply(builder);
+            if (lootBuilder != null) {
+                builder.build(lootBuilder);
+            }
         }
     }
 

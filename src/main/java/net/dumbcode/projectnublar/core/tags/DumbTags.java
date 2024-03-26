@@ -33,7 +33,7 @@ public final class DumbTags {
             this.tagBuilderOperator = tagBuilder
                 .andThen(builder ->
                     builder.add(Arrays.stream(DumbBlocks.Blocks.values())
-                        .filter(x -> x.getTags().dumbBlockTags().contains(this))
+                        .filter(x -> x.getMetadata().tags().dumbBlockTags().contains(this))
                         .map(x -> x.getRegistry().block().get())
                         .toArray(Block[]::new))
                 );
@@ -66,13 +66,13 @@ public final class DumbTags {
                 .andThen(builder -> builder
                         .add(
                             Arrays.stream(DumbBlocks.Blocks.values())
-                                .filter(x -> x.getTags().dumbItemTags().contains(this))
+                                .filter(x -> x.getMetadata().tags().dumbItemTags().contains(this))
                                 .map(x -> x.getRegistry().item().get())
                                 .toArray(Item[]::new)
                         )
                         .add(
                             Arrays.stream(DumbItems.Items.values())
-                                .filter(x -> x.getTags().dumbItemTags().contains(this))
+                                .filter(x -> x.getMetadata().tags().dumbItemTags().contains(this))
                                 .map(x -> x.getRegistry().item().get())
                                 .toArray(Item[]::new)
                         )

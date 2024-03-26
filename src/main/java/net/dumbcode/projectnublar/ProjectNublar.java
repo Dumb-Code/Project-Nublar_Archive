@@ -3,6 +3,7 @@ package net.dumbcode.projectnublar;
 import net.dumbcode.projectnublar.config.ClientConfig;
 import com.mojang.logging.LogUtils;
 import net.dumbcode.projectnublar.config.ServerConfig;
+import net.dumbcode.projectnublar.core.data.DataGenerator;
 import net.dumbcode.projectnublar.core.registry.Registrar;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;

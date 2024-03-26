@@ -975,7 +975,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     @Override
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput) {
         for (DumbBlocks.Blocks block : DumbBlocks.Blocks.values()) {
-            for (UnaryOperator<Builder> recipeBuilder : block.getRecipeBuilders()) {
+            for (UnaryOperator<Builder> recipeBuilder : block.getMetadata().recipeBuilders()) {
                 Builder builder = new Builder(this, recipeOutput, block.getRegistry().item().get(), block.getRegisterName());
                 recipeBuilder.apply(builder);
                 builder.build();
@@ -983,7 +983,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         }
 
         for (DumbItems.Items item : DumbItems.Items.values()) {
-            for (UnaryOperator<Builder> recipeBuilder : item.getRecipeBuilders()) {
+            for (UnaryOperator<Builder> recipeBuilder : item.getMetadata().recipeBuilders()) {
                 Builder builder = new Builder(this, recipeOutput, item.getRegistry().item().get(), item.getRegisterName());
                 recipeBuilder.apply(builder);
                 builder.build();

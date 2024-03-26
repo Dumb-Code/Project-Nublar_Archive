@@ -26,6 +26,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
@@ -57,13 +58,8 @@ public class Registrar {
     public static void register(@NotNull RegisterEvent event) {
         event.register(Registrar.BLOCKS.getRegistryKey(), helper -> {
             for (DumbBlocks.Blocks block : DumbBlocks.Blocks.values()) {
-                Class<? extends IDumbBlock> blockClass = block.getBlockClass();
-                Block instance;
-                try {
-                    instance = (Block) blockClass.getDeclaredConstructor().newInstance();
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
+                Supplier<IDumbBlock> blockConstructor = block.getBlockConstructor();
+                Block instance = (Block) blockConstructor.get();
                 helper.register(new ResourceLocation(ProjectNublar.MOD_ID, block.getRegisterName()), instance);
             }
         });
@@ -75,31 +71,21 @@ public class Registrar {
                 helper.register(new ResourceLocation(ProjectNublar.MOD_ID, block.getRegisterName()), item);
             }
             for (DumbItems.Items item : DumbItems.Items.values()) {
-                Class<? extends DumbItem> itemClass = item.getItemClass();
-                Item instance;
-                try {
-                    instance = itemClass.getDeclaredConstructor().newInstance();
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
+                Supplier<DumbItem> itemClass = item.getItemConstructor();
+                Item instance = itemClass.get();
                 helper.register(new ResourceLocation(ProjectNublar.MOD_ID, item.getRegisterName()), instance);
             }
         });
         event.register(Registrar.ENTITY_TYPES.getRegistryKey(), helper -> {
-            for(DumbEntities entity : DumbEntities.values()) {
+            for(DumbEntities.Entities entity : DumbEntities.Entities.values()) {
                 helper.register(ProjectNublar.resourceLocation(entity.name().toLowerCase()), entity.getNativeType());
             }
         });
         event.register(
             Registrar.CREATIVE_MODE_TABS.getRegistryKey(), helper -> {
                 for (DumbCreativeTabs.CreativeTabs creativeTab : DumbCreativeTabs.CreativeTabs.values()) {
-                    Class<? extends DumbCreativeTab> creativeTabClass = creativeTab.getCreativeTabClass();
-                    DumbCreativeTab instance;
-                    try {
-                        instance = creativeTabClass.getDeclaredConstructor().newInstance();
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Supplier<DumbCreativeTab> creativeTabConstructor = creativeTab.getCreativeTabConstructor();
+                    DumbCreativeTab instance = creativeTabConstructor.get();
                     CreativeModeTab creativeModeTab = instance.get();
                     helper.register(new ResourceLocation(ProjectNublar.MOD_ID, creativeTab.getRegisterName()), creativeModeTab);
                 }

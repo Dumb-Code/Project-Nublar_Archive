@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -25,7 +26,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.@NotNull Provider provider) {
         for (DumbTags.Blocks block : DumbTags.Blocks.values()) {
             block.getTagBuilderOperator().apply(tag(block.getTagKey()));
         }
@@ -37,7 +38,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                 TagKey<Block> tagKey = (TagKey<Block>) field.get(null);
                 if (tagKey == null) continue;
                 Block[] array = Arrays.stream(DumbBlocks.Blocks.values())
-                    .filter(x -> x.getTags().blockTags().contains(tagKey))
+                    .filter(x -> x.getMetadata().tags().blockTags().contains(tagKey))
                     .map(x -> x.getRegistry().block().get())
                     .toArray(Block[]::new);
                 if (array.length == 0) continue;

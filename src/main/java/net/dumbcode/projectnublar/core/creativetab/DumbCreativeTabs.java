@@ -11,36 +11,33 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
-public class DumbCreativeTabs {
+public final class DumbCreativeTabs {
 
     public enum CreativeTabs {
-        ALL_ITEMS(AllItemsCreativeTab.class);
+        ALL_ITEMS(AllItemsCreativeTab::new);
 
-        private final Class<? extends DumbCreativeTab> creativeTabClass;
+        private final Supplier<DumbCreativeTab> creativeTabConstructor;
         private final RegistryObject<CreativeModeTab> registryCreativeTab = RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.CREATIVE_MODE_TABS.getRegistryKey(), MOD_ID);
-
-        public static @Unmodifiable @NotNull List<Class<? extends DumbCreativeTab>> classes() {
-            return Arrays.stream(values()).map(CreativeTabs::getCreativeTabClass).collect(Collectors.toUnmodifiableList());
-        }
 
         public static @Unmodifiable @NotNull List<RegistryObject<CreativeModeTab>> registryCreativeTabs() {
             return Arrays.stream(CreativeTabs.values()).map(x -> x.registryCreativeTab).toList();
         }
 
-        CreativeTabs(Class<? extends DumbCreativeTab> creativeTabClass) {
-            this.creativeTabClass = creativeTabClass;
+        CreativeTabs(Supplier<DumbCreativeTab> creativeTabConstructor) {
+            this.creativeTabConstructor = creativeTabConstructor;
         }
 
         public @NotNull CreativeModeTab get() {
             return registryCreativeTab.get();
         }
 
-        public Class<? extends DumbCreativeTab> getCreativeTabClass() {
-            return this.creativeTabClass;
+        public Supplier<DumbCreativeTab> getCreativeTabConstructor() {
+            return this.creativeTabConstructor;
         }
 
         public @NotNull String getRegisterName() {

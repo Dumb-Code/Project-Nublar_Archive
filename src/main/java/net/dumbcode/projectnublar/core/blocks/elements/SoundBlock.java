@@ -14,7 +14,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class SoundBlock extends DumbBlock {
-        public SoundBlock() {
+    public SoundBlock() {
             super(Properties.ofFullCopy(Blocks.GOLD_BLOCK));
         }
     @Override

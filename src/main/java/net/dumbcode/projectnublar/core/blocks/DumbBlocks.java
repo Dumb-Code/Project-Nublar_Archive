@@ -15,62 +15,59 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
-public class DumbBlocks {
+public final class DumbBlocks {
 
     public enum Blocks {
         TEST_BLOCK(
-            TestBlock.class,
-            Tags.of(
-                null,
-                List.of(BlockTags.MINEABLE_WITH_PICKAXE, net.minecraftforge.common.Tags.Blocks.NEEDS_NETHERITE_TOOL)
-            ),
-            ModBlockLootTables.Builder::dropSelf,
-            recipe -> recipe.nineBlockStorage(true, RecipeCategory.BUILDING_BLOCKS, DumbItems.Items.TEST_ITEM.getRegistry().item().get(), MOD_ID),
-            recipe -> recipe.oreSmelting(RecipeCategory.BUILDING_BLOCKS, List.of(Blocks.valueOf("TEST_ORE_BLOCK").getRegistry().item().get()), 1F, 200),
-            recipe -> recipe.oreBlasting(RecipeCategory.BUILDING_BLOCKS, List.of(Blocks.valueOf("TEST_ORE_BLOCK").getRegistry().item().get()), 1F, 200)
+            TestBlock::new,
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .recipe(recipe -> recipe.nineBlockStorage(
+                    true,
+                    RecipeCategory.BUILDING_BLOCKS,
+                    DumbItems.Items.TEST_ITEM.getRegistry().item().get(),
+                    MOD_ID
+                ))
         ),
         TEST_ORE_BLOCK(
-            TestOreBlock.class,
-            Tags.of(
-                List.of(DumbTags.Blocks.OVERWORLD_ORES),
-                List.of(BlockTags.NEEDS_IRON_TOOL, BlockTags.MINEABLE_WITH_PICKAXE)
-            ),
-            lootTable -> lootTable.createOreDrop(DumbItems.Items.TEST_ITEM.getRegistry().item().get())
+            TestOreBlock::new,
+            metadata -> metadata
+                .tags(tags -> tags
+                    .dumbBlocks(DumbTags.Blocks.OVERWORLD_ORES)
+                    .blocks(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
+                )
+                .lootTable(loot -> loot.createOreDrop(DumbItems.Items.TEST_ITEM.getRegistry().item().get()))
         ),
         SOUND_BLOCK(
-            SoundBlock.class,
-            Tags.of(
-                null,
-                List.of(BlockTags.MINEABLE_WITH_PICKAXE)
-            ),
-            ModBlockLootTables.Builder::dropSelf
+            SoundBlock::new,
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
         );
 
-        private final Class<? extends IDumbBlock> blockClass;
+        private final Supplier<IDumbBlock> blockConstructor;
         private final Registry registry = Registry.of(
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.BLOCKS.getRegistryKey(), MOD_ID),
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.ITEMS.getRegistryKey(), MOD_ID)
         );
-        private final Tags tags;
-        private final Consumer<ModBlockLootTables.Builder> lootTableBuilder;
-        private final List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
-
-        public static @Unmodifiable @NotNull List<Class<? extends IDumbBlock>> classes() {
-            return Arrays.stream(values()).map(Blocks::getBlockClass).collect(Collectors.toUnmodifiableList());
-        }
+        private final Metadata metadata;
 
         public static @Unmodifiable @NotNull List<RegistryObject<Block>> registryBlocks() {
             return Arrays.stream(values()).map(x -> x.registry.block).toList();
@@ -80,58 +77,71 @@ public class DumbBlocks {
             return Arrays.stream(values()).map(x -> x.registry.item).toList();
         }
 
-        Blocks(Class<? extends IDumbBlock> blockClass) {
-            this.blockClass = blockClass;
-            this.tags = Tags.of();
-            this.lootTableBuilder = (builder -> {});
-            this.recipeBuilders = List.of();
-        }
-
-        @SafeVarargs
-        Blocks(Class<? extends IDumbBlock> blockClass, Consumer<ModBlockLootTables.Builder> lootTableBuilder, UnaryOperator<ModRecipeProvider.Builder> ... builders) {
-            this.blockClass = blockClass;
-            this.tags = Tags.of();
-            this.lootTableBuilder = lootTableBuilder;
-            this.recipeBuilders = Arrays.asList(builders);
-        }
-
-        Blocks(Class<? extends IDumbBlock> blockClass, @NotNull Tags tags) {
-            this.blockClass = blockClass;
-            this.tags = tags;
-            this.lootTableBuilder = (builder -> {});
-            this.recipeBuilders = List.of();
-        }
-
-        @SafeVarargs
-        Blocks(Class<? extends IDumbBlock> blockClass, @NotNull Tags tags, Consumer<ModBlockLootTables.Builder> lootTableBuilder, UnaryOperator<ModRecipeProvider.Builder> ... builders) {
-            this.blockClass = blockClass;
-            this.tags = tags;
-            this.lootTableBuilder = lootTableBuilder;
-            this.recipeBuilders = Arrays.asList(builders);
+        Blocks(Supplier<IDumbBlock> blockConstructor, @NotNull UnaryOperator<Metadata.Builder> metadata) {
+            this.blockConstructor = blockConstructor;
+            this.metadata = metadata.apply(new Metadata.Builder()).build();
         }
 
         public @NotNull Registry getRegistry() {
             return registry;
         }
 
-        public @NotNull Tags getTags() {
-            return tags;
+        public @NotNull Metadata getMetadata() {
+            return metadata;
         }
 
-        public Class<? extends IDumbBlock> getBlockClass() {
-            return this.blockClass;
+        public Supplier<IDumbBlock> getBlockConstructor() {
+            return this.blockConstructor;
         }
 
-        public @NotNull List<UnaryOperator<ModRecipeProvider.Builder>> getRecipeBuilders() {
-            return this.recipeBuilders;
-        }
-
-        public Consumer<ModBlockLootTables.Builder> getLootTableBuilder() {
-            return this.lootTableBuilder;
-        }
 
         public @NotNull String getRegisterName() {
             return this.name().toLowerCase();
+        }
+    }
+
+    public record Metadata(Tags tags, Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders) {
+        public static class Builder {
+            private Tags tags = Tags.of();
+            private Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder;
+            private List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
+
+            Builder() {
+            }
+
+            public Builder tags(@NotNull UnaryOperator<Tags.Builder> tags) {
+                this.tags = tags.apply(new Tags.Builder()).build();
+                return this;
+            }
+
+            public Builder lootTable(Function<ModBlockLootTables.Builder, LootTable.Builder> lootTable) {
+                this.lootTableBuilder = lootTable;
+                return this;
+            }
+
+            public Builder recipe(UnaryOperator<ModRecipeProvider.Builder> recipe) {
+                if (this.recipeBuilders == null) {
+                    this.recipeBuilders = new ArrayList<>();
+                }
+                this.recipeBuilders.add(recipe);
+                return this;
+            }
+
+            public Builder recipe(UnaryOperator<ModRecipeProvider.Builder>... recipes) {
+                if (this.recipeBuilders == null) {
+                    this.recipeBuilders = Arrays.asList(recipes);
+                } else {
+                    this.recipeBuilders.addAll(Arrays.asList(recipes));
+                }
+                return this;
+            }
+
+            public Metadata build() {
+                if (lootTableBuilder == null) {
+                    throw new IllegalStateException("Loot table builder is not set");
+                }
+                return new Metadata(tags, lootTableBuilder, recipeBuilders == null ? List.of() : recipeBuilders);
+            }
         }
     }
 
@@ -189,6 +199,67 @@ public class DumbBlocks {
 
         private static @NotNull Tags of() {
             return new Tags(List.of(), List.of(), List.of(), List.of());
+        }
+
+        public static final class Builder {
+            private final Tags tags;
+
+            private Builder() {
+                this.tags = Tags.of();
+            }
+
+            public @NotNull Builder dumbBlocks(@NotNull DumbTags.Blocks... dumbBlockTags) {
+                return new Builder(
+                    Tags.of(
+                        Arrays.asList(dumbBlockTags),
+                        tags.blockTags,
+                        tags.dumbItemTags,
+                        tags.itemTags
+                    )
+                );
+            }
+
+            @SafeVarargs
+            public final @NotNull Builder blocks(@NotNull TagKey<Block>... blockTags) {
+                return new Builder(
+                    Tags.of(
+                        tags.dumbBlockTags,
+                        Arrays.asList(blockTags),
+                        tags.dumbItemTags,
+                        tags.itemTags
+                    )
+                );
+            }
+
+            public @NotNull Builder dumbItems(@NotNull DumbTags.Items... dumbItemTags) {
+                return new Builder(
+                    Tags.of(
+                        tags.dumbBlockTags,
+                        tags.blockTags,
+                        Arrays.asList(dumbItemTags),
+                        tags.itemTags
+                    )
+                );
+            }
+
+            public @NotNull Builder items(@NotNull TagKey<Item>... itemTags) {
+                return new Builder(
+                    Tags.of(
+                        tags.dumbBlockTags,
+                        tags.blockTags,
+                        tags.dumbItemTags,
+                        Arrays.asList(itemTags)
+                    )
+                );
+            }
+
+            public @NotNull Tags build() {
+                return tags;
+            }
+
+            private Builder(@NotNull Tags tags) {
+                this.tags = tags;
+            }
         }
 
     }

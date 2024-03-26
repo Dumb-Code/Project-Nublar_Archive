@@ -1,0 +1,4 @@
+// 1.20.4	2024-03-26T20:16:00.8764658	Loot Tables
+fb9def7723ab89fcb55f17956b36c9ff2e0afe5f data/projectnublar/loot_tables/blocks/sound_block.json
+d2a84cd099e6ba10b9cab63251eb33297dac9460 data/projectnublar/loot_tables/blocks/test_block.json
+8d0c7052b2531d6d324b9fdba84ac57e5ef0b3bb data/projectnublar/loot_tables/blocks/test_ore_block.json

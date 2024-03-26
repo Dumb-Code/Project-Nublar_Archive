@@ -1,0 +1,5 @@
+// 1.20.4	2024-03-26T21:33:31.8492992	Tags for minecraft:block mod id projectnublar
+e7b5238b56ffb3b71deb3896954550060352e1dd data/minecraft/tags/blocks/mineable/pickaxe.json
+35aab03f30b4c29d357fce66a1389e1ac22cde90 data/minecraft/tags/blocks/needs_diamond_tool.json
+10f4425313e7d85cc51096b4f83ae788291d43c8 data/minecraft/tags/blocks/needs_iron_tool.json
+53f8cd26b7e49f3ed4871e08dfc432b95b4f7695 data/projectnublar/tags/blocks/overworld_ores.json
