@@ -5,11 +5,13 @@ import net.dumbcode.projectnublar.core.blocks.IDumbBlock;
 import net.dumbcode.projectnublar.core.blocks.DumbBlocks;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTab;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTabs;
+import net.dumbcode.projectnublar.core.entities.DumbEntities;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
 import net.dumbcode.projectnublar.core.items.DumbItem;
 import net.dumbcode.projectnublar.core.items.DumbItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -39,12 +41,16 @@ public class Registrar {
     // FLUID_TYPES defines minecraft constraints of the projectnublar:examplefluid. More like fluid's config. It defines properties like
     // viscosity, can fluid drown, can it be passed on a boat, extinguish fire etc.
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.FLUID_TYPES, MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MOD_ID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
     public static void register(@NotNull IEventBus bus) {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         CREATIVE_MODE_TABS.register(bus);
+        ENTITY_TYPES.register(bus);
+        FLUID_TYPES.register(bus);
+        FLUIDS.register(bus);
     }
 
     @SubscribeEvent
@@ -77,6 +83,11 @@ public class Registrar {
                     throw new RuntimeException(e);
                 }
                 helper.register(new ResourceLocation(ProjectNublar.MOD_ID, item.getRegisterName()), instance);
+            }
+        });
+        event.register(Registrar.ENTITY_TYPES.getRegistryKey(), helper -> {
+            for(DumbEntities entity : DumbEntities.values()) {
+                helper.register(ProjectNublar.resourceLocation(entity.name().toLowerCase()), entity.getNativeType());
             }
         });
         event.register(
