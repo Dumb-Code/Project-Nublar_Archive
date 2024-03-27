@@ -85,7 +85,7 @@ public class Registrar {
         });
         event.register(Registrar.ENTITY_TYPES.getRegistryKey(), helper -> {
             for(DumbMobs.Mobs entity : DumbMobs.Mobs.values()) {
-                helper.register(ProjectNublar.resourceLocation(entity.name().toLowerCase()), entity.getNativeType());
+                helper.register(ProjectNublar.resourceLocation(entity.getRegisterName()), entity.getEntityType());
             }
         });
         event.register(Registrar.BLOCK_ENTITY_TYPES.getRegistryKey(), helper -> {
