@@ -1,4 +1,4 @@
-package net.dumbcode.projectnublar.core.entities;
+package net.dumbcode.projectnublar.core.mobs;
 
 import net.dumbcode.projectnublar.core.utils.MathsUtil;
 import net.minecraft.core.BlockPos;

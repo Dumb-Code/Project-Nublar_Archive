@@ -1,4 +1,4 @@
-package net.dumbcode.projectnublar.core.entities.elements;
+package net.dumbcode.projectnublar.core.mobs.elements;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
@@ -13,10 +13,10 @@ import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class DinosaurEntity extends Animal implements GeoEntity {
+public class DinosaurMob extends Animal implements GeoEntity {
     protected AnimatableInstanceCache animationCache = GeckoLibUtil.createInstanceCache(this);
 
-    public DinosaurEntity(EntityType<? extends Animal> pEntityType, Level pLevel) {
+    public DinosaurMob(EntityType<? extends Animal> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -36,7 +36,7 @@ public class DinosaurEntity extends Animal implements GeoEntity {
         controllers.add(new AnimationController<>(this, "Head", 5, this::headAnimationController));
     }
 
-    private PlayState headAnimationController(AnimationState<DinosaurEntity> entity) {
+    private PlayState headAnimationController(AnimationState<DinosaurMob> entity) {
         // if entity is attacking, play specific animation by using
         // event.setAndContinue(animation)
         return PlayState.STOP;
