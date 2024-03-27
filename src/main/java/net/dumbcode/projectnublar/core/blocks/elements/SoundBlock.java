@@ -18,7 +18,8 @@ public class SoundBlock extends DumbBlock {
             super(Properties.ofFullCopy(Blocks.GOLD_BLOCK));
         }
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    @SuppressWarnings("deprecation")
+    public @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit) {
         pLevel.playSound(pPlayer, pPos, SoundEvents.NOTE_BLOCK_BASS.get(), SoundSource.BLOCKS, 1f, 1f);
         return InteractionResult.SUCCESS;
     }

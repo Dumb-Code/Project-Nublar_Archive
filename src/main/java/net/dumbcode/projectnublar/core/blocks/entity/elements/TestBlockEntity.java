@@ -3,7 +3,6 @@ package net.dumbcode.projectnublar.core.blocks.entity.elements;
 import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntities;
 import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntity;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;

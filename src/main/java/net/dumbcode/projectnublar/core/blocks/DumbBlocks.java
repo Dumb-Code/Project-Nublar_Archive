@@ -16,7 +16,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
@@ -87,6 +85,9 @@ public final class DumbBlocks {
 
         Blocks(Function<DumbBlockEntities.Entities, IDumbBlock> blockConstructor, @NotNull UnaryOperator<Metadata.Builder> metadata) {
             this.metadata = metadata.apply(new Metadata.Builder()).build();
+            if (this.metadata.associatedEntity == null) {
+                throw new IllegalStateException("Associated entity is required when using this constructor. Call it with Metadata#associatedEntity method.");
+            }
             this.blockConstructor = () -> blockConstructor.apply(this.metadata.associatedEntity);
         }
 

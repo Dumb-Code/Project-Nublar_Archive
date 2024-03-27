@@ -37,7 +37,7 @@ public class ModItemTagGenerator extends ItemTagsProvider {
         for (Field field : fields) {
             if (!field.getType().equals(TagKey.class)) continue;
             try {
-                TagKey<Item> tagKey = (TagKey<Item>) field.get(null);
+                @SuppressWarnings("unchecked") TagKey<Item> tagKey = (TagKey<Item>) field.get(null);
                 if (tagKey == null) continue;
                 Item[] itemsArray = Arrays.stream(DumbItems.Items.values())
                     .filter(x -> x.getMetadata().tags().itemTags().contains(tagKey))

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 

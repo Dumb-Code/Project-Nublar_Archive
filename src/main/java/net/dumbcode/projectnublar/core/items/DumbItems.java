@@ -1,6 +1,5 @@
 package net.dumbcode.projectnublar.core.items;
 
-import net.dumbcode.projectnublar.core.blocks.DumbBlocks;
 import net.dumbcode.projectnublar.core.data.ModRecipeProvider;
 import net.dumbcode.projectnublar.core.items.elements.AcornItem;
 import net.dumbcode.projectnublar.core.items.elements.OreDetectorItem;
@@ -8,7 +7,6 @@ import net.dumbcode.projectnublar.core.items.elements.StrawberryItem;
 import net.dumbcode.projectnublar.core.items.elements.TestItem;
 import net.dumbcode.projectnublar.core.registry.Registrar;
 import net.dumbcode.projectnublar.core.tags.DumbTags;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -22,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 

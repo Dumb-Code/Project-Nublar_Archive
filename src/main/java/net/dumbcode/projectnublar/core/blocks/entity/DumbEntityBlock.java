@@ -9,8 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Supplier;
-
 public abstract class DumbEntityBlock extends DumbBlock implements EntityBlock {
     private final DumbBlockEntities.Entities entity;
     protected DumbEntityBlock(DumbBlockEntities.Entities entity, Properties properties) {
@@ -19,6 +17,7 @@ public abstract class DumbEntityBlock extends DumbBlock implements EntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull RenderShape getRenderShape(@NotNull BlockState pState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }

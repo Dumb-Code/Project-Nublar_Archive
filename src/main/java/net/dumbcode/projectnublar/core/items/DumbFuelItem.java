@@ -28,7 +28,7 @@ public abstract class DumbFuelItem extends DumbItem {
         }
 
         @Override
-        public @NotNull FuelProperties food(FoodProperties food) {
+        public @NotNull FuelProperties food(@NotNull FoodProperties food) {
             return (FuelProperties) super.food(food);
         }
 
@@ -43,12 +43,12 @@ public abstract class DumbFuelItem extends DumbItem {
         }
 
         @Override
-        public @NotNull FuelProperties craftRemainder(Item craftingRemainingItem) {
+        public @NotNull FuelProperties craftRemainder(@NotNull Item craftingRemainingItem) {
             return (FuelProperties) super.craftRemainder(craftingRemainingItem);
         }
 
         @Override
-        public @NotNull FuelProperties rarity(Rarity rarity) {
+        public @NotNull FuelProperties rarity(@NotNull Rarity rarity) {
             return (FuelProperties) super.rarity(rarity);
         }
 

@@ -831,9 +831,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         /**
          * Creates a recipe for a 9-block storage block
          * @param packed Is the result packed or unpacked? If it's somehow both two recipes will be created: one for packed, one for unpacked
-         * @param category
-         * @param item
-         * @param group
+         * @param category The category of the recipe
+         * @param item The item to be used in the recipe
+         * @param group The group of the recipe
          * @return An iterable of two recipes if the packed state is undefined, otherwise a single recipe (already built)
          */
         public Iterable<Builder> nineBlockStorage(@NotNull QuantumBoolean packed, RecipeCategory category, ItemLike item, String group) {
@@ -991,6 +991,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static @NotNull Criterion<EnterBlockTrigger.TriggerInstance> insideOf(@NotNull Block block) {
         return CriteriaTriggers.ENTER_BLOCK.createCriterion(new EnterBlockTrigger.TriggerInstance(Optional.empty(), Optional.of(block.builtInRegistryHolder()), Optional.empty()));
     }
