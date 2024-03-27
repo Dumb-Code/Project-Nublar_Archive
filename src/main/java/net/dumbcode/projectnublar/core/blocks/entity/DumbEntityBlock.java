@@ -25,7 +25,7 @@ public abstract class DumbEntityBlock extends DumbBlock implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return entity.getBlockEntityConstructor().create(pPos, pState);
+    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
+        return entity.getRegistry().blockEntityType().get().create(pPos, pState);
     }
 }

@@ -12,17 +12,10 @@ import software.bernie.geckolib.renderer.GeoBlockRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public abstract class DumbBlockEntity extends BlockEntity implements GeoBlockEntity {
-
-    private final DumbBlockEntities.Entities entity;
     protected final AnimatableInstanceCache instanceCache = GeckoLibUtil.createInstanceCache(this);
 
     protected DumbBlockEntity(DumbBlockEntities.Entities entity, BlockPos pPos, BlockState pBlockState) {
         super(entity.getRegistry().blockEntityType().get(), pPos, pBlockState);
-        this.entity = entity;
-    }
-
-    public Function<EntityRendererProvider.Context, ? extends GeoBlockRenderer<DumbBlockEntity>> getRenderer() {
-        return Renderer::new;
     }
 
     @Override

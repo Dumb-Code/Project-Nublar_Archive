@@ -89,7 +89,7 @@ public enum QuantumBoolean implements Comparable<QuantumBoolean>, Constable {
         if (a == FALSE && b == FALSE) return FALSE;
         if (a == TRUE && b == FALSE) return TRUE;
         if (a == FALSE && b == TRUE) return TRUE;
-        if (a == TRUE && b == TRUE) return TRUE;
+        if (a == TRUE && b == TRUE) return FALSE;
         return BOTH;
     }
 }

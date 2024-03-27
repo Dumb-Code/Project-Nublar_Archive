@@ -98,7 +98,8 @@ public class Registrar {
                     validBlocks.add(block.getRegistry().block().get());
                 }
                 BlockEntityType.Builder<DumbBlockEntity> builder = BlockEntityType.Builder.of(entity.getBlockEntityConstructor(), validBlocks.toArray(new Block[0]));
-                helper.register(ProjectNublar.resourceLocation(entity.getRegisterName()), builder.build(null));
+                BlockEntityType<DumbBlockEntity> build = builder.build(null);
+                helper.register(ProjectNublar.resourceLocation(entity.getRegisterName()), build);
             }
         });
         event.register(Registrar.CREATIVE_MODE_TABS.getRegistryKey(), helper -> {
