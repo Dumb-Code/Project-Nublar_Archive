@@ -32,7 +32,7 @@ public class DinosaurMob extends Animal implements GeoEntity {
     }
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    public void registerControllers(AnimatableManager.@NotNull ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Head", 5, this::headAnimationController));
     }
 
