@@ -85,6 +85,11 @@ public final class DumbBlocks {
             this.metadata = metadata.apply(new Metadata.Builder()).build();
         }
 
+        Blocks(Function<DumbBlockEntities.Entities, IDumbBlock> blockConstructor, @NotNull UnaryOperator<Metadata.Builder> metadata) {
+            this.metadata = metadata.apply(new Metadata.Builder()).build();
+            this.blockConstructor = () -> blockConstructor.apply(this.metadata.associatedEntity);
+        }
+
         public @NotNull Registry getRegistry() {
             return registry;
         }

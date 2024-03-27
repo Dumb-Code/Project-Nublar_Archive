@@ -6,20 +6,19 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
 public class TestBlockEntity extends DumbBlockEntity {
-    private static final DumbBlockEntities.Entities ENTITY = DumbBlockEntities.Entities.TEST_BLOCK;
-
     public static class Renderer extends GeoBlockRenderer<DumbBlockEntity> {
-        public Renderer(BlockEntityRendererProvider.Context context) {
-            super(ENTITY.getModel());
+        public Renderer(DumbBlockEntities.@NotNull Entities entity, BlockEntityRendererProvider.Context context) {
+            super(entity.getModel());
         }
     }
 
-    public TestBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(ENTITY, pPos, pBlockState);
+    public TestBlockEntity(DumbBlockEntities.Entities entity, BlockPos pPos, BlockState pBlockState) {
+        super(entity, pPos, pBlockState);
     }
 
     @Override
