@@ -113,7 +113,7 @@ public final class DumbBlocks {
             private Tags tags = Tags.of();
             private Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder;
             private List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
-            private @Nullable DumbBlockEntities.Entities associatedEntity;
+            private @Nullable DumbBlockEntities.Entities associatedEntity = null;
 
             Builder() {
             }
