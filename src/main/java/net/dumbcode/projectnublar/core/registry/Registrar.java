@@ -98,7 +98,7 @@ public class Registrar {
                     validBlocks.add(block.getRegistry().block().get());
                 }
                 BlockEntityType.Builder<DumbBlockEntity> builder = BlockEntityType.Builder.of(entity.getBlockEntityConstructor(), validBlocks.toArray(new Block[0]));
-                BlockEntityType<DumbBlockEntity> build = builder.build(null);
+                @SuppressWarnings("ConstantConditions") BlockEntityType<DumbBlockEntity> build = builder.build(null);
                 helper.register(ProjectNublar.resourceLocation(entity.getRegisterName()), build);
             }
         });
