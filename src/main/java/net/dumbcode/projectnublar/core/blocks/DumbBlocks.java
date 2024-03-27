@@ -3,6 +3,7 @@ package net.dumbcode.projectnublar.core.blocks;
 import net.dumbcode.projectnublar.core.blocks.elements.SoundBlock;
 import net.dumbcode.projectnublar.core.blocks.elements.TestBlock;
 import net.dumbcode.projectnublar.core.blocks.elements.TestOreBlock;
+import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntities;
 import net.dumbcode.projectnublar.core.data.ModRecipeProvider;
 import net.dumbcode.projectnublar.core.data.loot.ModBlockLootTables;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
@@ -15,6 +16,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +47,7 @@ public final class DumbBlocks {
                     DumbItems.Items.TEST_ITEM.getRegistry().item().get(),
                     MOD_ID
                 ))
+                .associatedEntity(DumbBlockEntities.Entities.TEST_BLOCK)
         ),
         TEST_ORE_BLOCK(
             TestOreBlock::new,
@@ -100,11 +103,12 @@ public final class DumbBlocks {
         }
     }
 
-    public record Metadata(Tags tags, Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders) {
+    public record Metadata(Tags tags, Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders, @Nullable DumbBlockEntities.Entities associatedEntity) {
         public static class Builder {
             private Tags tags = Tags.of();
             private Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder;
             private List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders;
+            private @Nullable DumbBlockEntities.Entities associatedEntity;
 
             Builder() {
             }
@@ -136,11 +140,16 @@ public final class DumbBlocks {
                 return this;
             }
 
+            public Builder associatedEntity(DumbBlockEntities.Entities associatedEntity) {
+                this.associatedEntity = associatedEntity;
+                return this;
+            }
+
             public Metadata build() {
                 if (lootTableBuilder == null) {
                     throw new IllegalStateException("Loot table builder is not set");
                 }
-                return new Metadata(tags, lootTableBuilder, recipeBuilders == null ? List.of() : recipeBuilders);
+                return new Metadata(tags, lootTableBuilder, recipeBuilders == null ? List.of() : recipeBuilders, associatedEntity);
             }
         }
     }

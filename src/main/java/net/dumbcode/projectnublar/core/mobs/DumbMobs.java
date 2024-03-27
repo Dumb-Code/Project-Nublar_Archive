@@ -1,18 +1,18 @@
-package net.dumbcode.projectnublar.core.entities;
+package net.dumbcode.projectnublar.core.mobs;
 
-import net.dumbcode.projectnublar.core.entities.elements.DinosaurEntity;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
+import net.dumbcode.projectnublar.core.mobs.elements.DinosaurMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import org.jetbrains.annotations.NotNull;
 
-public final class DumbEntities {
-    public enum Entities {
-        DINOSAUR(EntityType.Builder.of(DinosaurEntity::new, MobCategory.CREATURE));
+public final class DumbMobs {
+    public enum Mobs {
+        DINOSAUR(EntityType.Builder.of(DinosaurMob::new, MobCategory.CREATURE));
 
         private final EntityType<? extends Entity> nativeType;
-        Entities(EntityType.@NotNull Builder<? extends Entity> of) {
+        Mobs(EntityType.@NotNull Builder<? extends Entity> of) {
             this.nativeType = of.build(this.name().toLowerCase());
         }
 
@@ -22,7 +22,7 @@ public final class DumbEntities {
         }
     }
 
-    private DumbEntities() {
+    private DumbMobs() {
         throw new UtilityClassException();
     }
 }

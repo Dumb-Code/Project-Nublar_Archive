@@ -6,6 +6,7 @@ import net.dumbcode.projectnublar.config.ServerConfig;
 import net.dumbcode.projectnublar.core.data.DataGenerator;
 import net.dumbcode.projectnublar.core.registry.Registrar;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
