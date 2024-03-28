@@ -1,5 +1,6 @@
 package net.dumbcode.projectnublar.core.items;
 
+import net.dumbcode.projectnublar.core.data.ModItemModelProvider;
 import net.dumbcode.projectnublar.core.data.ModRecipeProvider;
 import net.dumbcode.projectnublar.core.items.elements.AcornItem;
 import net.dumbcode.projectnublar.core.items.elements.OreDetectorItem;
@@ -25,12 +26,30 @@ import static net.dumbcode.projectnublar.ProjectNublar.MOD_ID;
 
 public final class DumbItems {
     public enum Items {
-        TEST_ITEM(TestItem::new, metadata -> metadata),
-        ORE_DETECTOR(OreDetectorItem::new, metadata -> metadata),
-        STRAWBERRY(StrawberryItem::new, metadata -> metadata),
-        ACORN(AcornItem::new, metadata -> metadata);
+        TEST_ITEM(
+            TestItem::new,
+            ModItemModelProvider.Generator::basic,
+            metadata -> metadata
+        ),
+        ORE_DETECTOR(
+            OreDetectorItem::new,
+            ModItemModelProvider.Generator::basic,
+            metadata -> metadata
+        ),
+        STRAWBERRY(
+            StrawberryItem::new,
+            ModItemModelProvider.Generator::basic,
+            metadata -> metadata
+        ),
+        ACORN(
+            AcornItem::new,
+            ModItemModelProvider.Generator::basic,
+            metadata -> metadata
+        );
 
         private final Supplier<DumbItem> itemConstructor;
+
+        private final UnaryOperator<ModItemModelProvider.Generator> modelGeneratorOperator;
 
         private final Registry registry = Registry.of(
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.ITEMS.getRegistryKey(), MOD_ID)
@@ -41,8 +60,9 @@ public final class DumbItems {
             return Arrays.stream(Items.values()).map(x -> x.registry.item).toList();
         }
 
-        Items(Supplier<DumbItem> itemConstructor, @NotNull UnaryOperator<Metadata.Builder> metadataBuilder) {
+        Items(Supplier<DumbItem> itemConstructor, UnaryOperator<ModItemModelProvider.Generator> modelGeneratorOperator, @NotNull UnaryOperator<Metadata.Builder> metadataBuilder) {
             this.itemConstructor = itemConstructor;
+            this.modelGeneratorOperator = modelGeneratorOperator;
             this.metadata = metadataBuilder.apply(new Metadata.Builder()).build();
         }
 
@@ -52,6 +72,10 @@ public final class DumbItems {
 
         public Registry getRegistry() {
             return this.registry;
+        }
+
+        public UnaryOperator<ModItemModelProvider.Generator> getModelGeneratorOperator() {
+            return this.modelGeneratorOperator;
         }
 
         public Metadata getMetadata() {
