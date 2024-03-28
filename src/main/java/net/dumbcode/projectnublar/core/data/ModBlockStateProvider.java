@@ -47,6 +47,26 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return this;
         }
 
+        public ResourceLocation key() {
+            return ForgeRegistries.BLOCKS.getKey(block.get());
+        }
+
+        public String name() {
+            return key().getPath();
+        }
+
+        public ResourceLocation blockTexture() {
+            return provider.blockTexture(block.get());
+        }
+
+        public ResourceLocation extend(ResourceLocation rl, String suffix) {
+            return new ResourceLocation(rl.getNamespace(), rl.getPath() + suffix);
+        }
+
+        public ModelFile cubeAll() {
+            return provider.cubeAll(block.get());
+        }
+
         public Generator simple() {
             provider.simpleBlock(block.get());
             return this;
@@ -74,7 +94,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         public Generator simpleWithItem() {
             Block localBlock = block.get();
-            provider.simpleBlockWithItem(localBlock, provider.cubeAll(localBlock));
+            provider.simpleBlockWithItem(localBlock, cubeAll());
             return this;
         }
 
@@ -638,10 +658,5 @@ public class ModBlockStateProvider extends BlockStateProvider {
             Generator generator = new Generator(this, block.getRegistry().block());
             stateBuilderOperator.apply(generator);
         }
-    }
-
-    private void blockWithItem(@NotNull RegistryObject<Block> registryObject) {
-        Block block = registryObject.get();
-        simpleBlockWithItem(block, cubeAll(block));
     }
 }
