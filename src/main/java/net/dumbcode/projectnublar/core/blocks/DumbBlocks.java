@@ -5,6 +5,8 @@ import net.dumbcode.projectnublar.core.blocks.elements.SoundBlock;
 import net.dumbcode.projectnublar.core.blocks.elements.TestBlock;
 import net.dumbcode.projectnublar.core.blocks.elements.TestOreBlock;
 import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntities;
+import net.dumbcode.projectnublar.core.data.DataGenerator;
+import net.dumbcode.projectnublar.core.data.ModBlockStateProvider;
 import net.dumbcode.projectnublar.core.data.ModRecipeProvider;
 import net.dumbcode.projectnublar.core.data.loot.ModBlockLootTables;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
@@ -83,6 +85,7 @@ public final class DumbBlocks {
          */
         TEST_BLOCK(
             TestBlock::new,
+            ModBlockStateProvider.Generator::simpleWithItem,
             metadata -> metadata
                 .tags(tags -> tags.blocks(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL))
                 .lootTable(ModBlockLootTables.Builder::dropSelf)
@@ -100,6 +103,7 @@ public final class DumbBlocks {
          */
         TEST_ORE_BLOCK(
             TestOreBlock::new,
+            ModBlockStateProvider.Generator::simpleWithItem,
             metadata -> metadata
                 .tags(tags -> tags
                     .dumbBlocks(DumbTags.Blocks.OVERWORLD_ORES)
@@ -113,6 +117,7 @@ public final class DumbBlocks {
          */
         SOUND_BLOCK(
             SoundBlock::new,
+            ModBlockStateProvider.Generator::simpleWithItem,
             metadata -> metadata
                 .tags(tags -> tags.blocks(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_DIAMOND_TOOL))
                 .lootTable(ModBlockLootTables.Builder::dropSelf)
@@ -132,6 +137,13 @@ public final class DumbBlocks {
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.BLOCKS.getRegistryKey(), MOD_ID),
             RegistryObject.create(new ResourceLocation(MOD_ID, getRegisterName()), Registrar.ITEMS.getRegistryKey(), MOD_ID)
         );
+        /**
+         * It is used to define the block state generator for the block, which is responsible for generating the block state.
+         * The block state defines the properties of the block, such as its model, texture, and other visual properties.
+         * The data is then handled by the data generation system of this mod, {@link DataGenerator}
+         * The {@link UnaryOperator} allows for the state generator to be modified in a functional manner.
+         */
+        private final UnaryOperator<ModBlockStateProvider.Generator> stateGeneratorOperator;
         /**
          * The metadata of the block.
          * This contains information about the block's tags, loot table, recipes, and associated entity.
@@ -164,10 +176,12 @@ public final class DumbBlocks {
          * Constructor for blocks without an associated block entity.
          *
          * @param blockConstructor a supplier that provides an instance of the block
+         * @param stateBuilder a unary operator of {@link ModBlockStateProvider.Generator} that configures the block state generator.
          * @param metadata a unary operator of {@link Metadata.Builder} that configures the properties of the block.
          */
-        Blocks(Supplier<IDumbBlock> blockConstructor, @NotNull UnaryOperator<Metadata.Builder> metadata) {
+        Blocks(Supplier<IDumbBlock> blockConstructor, @NotNull UnaryOperator<ModBlockStateProvider.Generator> stateBuilder, @NotNull UnaryOperator<Metadata.Builder> metadata) {
             this.blockConstructor = blockConstructor;
+            this.stateGeneratorOperator = stateBuilder;
             this.metadata = metadata.apply(new Metadata.Builder()).build();
         }
 
@@ -176,13 +190,15 @@ public final class DumbBlocks {
          * This constructor requires an associated entity to be set in the metadata with {@link Metadata.Builder#associatedEntity(DumbBlockEntities.Entities)}.
          *
          * @param blockConstructor a function that provides an instance of the block with an associated entity, taking {@link DumbBlockEntities.Entities} as a parameter.
+         * @param stateBuilder a unary operator of {@link ModBlockStateProvider.Generator} that configures the block state generator.
          * @param metadata a unary operator of {@link Metadata.Builder} that configures the properties of the block.
          */
-        Blocks(Function<DumbBlockEntities.Entities, IDumbBlock> blockConstructor, @NotNull UnaryOperator<Metadata.Builder> metadata) {
+        Blocks(Function<DumbBlockEntities.Entities, IDumbBlock> blockConstructor, @NotNull UnaryOperator<ModBlockStateProvider.Generator> stateBuilder, @NotNull UnaryOperator<Metadata.Builder> metadata) {
             this.metadata = metadata.apply(new Metadata.Builder()).build();
             if (this.metadata.associatedEntity == null) {
                 throw new IllegalStateException("Associated entity is required when using this constructor. Call it with Metadata#associatedEntity method.");
             }
+            this.stateGeneratorOperator = stateBuilder;
             this.blockConstructor = () -> blockConstructor.apply(this.metadata.associatedEntity);
         }
 
@@ -194,6 +210,17 @@ public final class DumbBlocks {
          */
         public @NotNull Registry getRegistry() {
             return registry;
+        }
+
+        /**
+         * Returns the {@link UnaryOperator} for the state generator of the block.
+         * The state generator is responsible for generating the block state, which defines the visual properties of the block.
+         * The {@link UnaryOperator} allows for the state generator to be modified in a functional manner.
+         *
+         * @return the {@link UnaryOperator} for the state generator of the block.
+         */
+        public @NotNull UnaryOperator<ModBlockStateProvider.Generator> getStateGeneratorOperator() {
+            return stateGeneratorOperator;
         }
 
         /**
