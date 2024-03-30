@@ -1,12 +1,11 @@
 package net.dumbcode.projectnublar.core.blocks;
 
 import net.dumbcode.projectnublar.ProjectNublar;
-import net.dumbcode.projectnublar.core.blocks.elements.SoundBlock;
-import net.dumbcode.projectnublar.core.blocks.elements.TestBlock;
-import net.dumbcode.projectnublar.core.blocks.elements.TestOreBlock;
+import net.dumbcode.projectnublar.core.blocks.elements.*;
 import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntities;
 import net.dumbcode.projectnublar.core.data.DataGenerator;
 import net.dumbcode.projectnublar.core.data.ModBlockStateProvider;
+import net.dumbcode.projectnublar.core.data.ModItemModelProvider;
 import net.dumbcode.projectnublar.core.data.ModRecipeProvider;
 import net.dumbcode.projectnublar.core.data.loot.ModBlockLootTables;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
@@ -21,6 +20,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,6 +96,79 @@ public final class DumbBlocks {
                     MOD_ID
                 ))
                 .associatedEntity(DumbBlockEntities.Entities.TEST_BLOCK)
+        ),
+        TEST_BUTTON_BLOCK(
+            TestButtonBlock::new,
+            state -> state.button(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.BUTTONS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_SLAB_BLOCK(
+            TestSlabBlock::new,
+            state -> state.slab(state.blockTexture(Blocks.valueOf("TEST_BLOCK")), state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.SLABS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_STAIRS_BLOCK(
+            TestStairsBlock::new,
+            state -> state.stairs(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.STAIRS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_PRESSURE_PLATE_BLOCK(
+            TestPressurePlateBlock::new,
+            state -> state.pressurePlate(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.PRESSURE_PLATES))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_FENCE_BLOCK(
+            TestFenceBlock::new,
+            state -> state.fence(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.FENCES))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_FENCE_GATE_BLOCK(
+            TestFenceGateBlock::new,
+            state -> state.fenceGate(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.FENCE_GATES))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_WALL_BLOCK(
+            TestWallBlock::new,
+            state -> state.wall(state.blockTexture(Blocks.valueOf("TEST_BLOCK"))),
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.WALLS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+        ),
+        TEST_DOOR_BLOCK(
+            TestDoorBlock::new,
+            ModBlockStateProvider.Generator::doorWithRenderType,
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.DOORS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
+                .itemModel(ModItemModelProvider.Generator::basicBlock)
+        ),
+        TEST_TRAPDOOR_BLOCK(
+            TestTrapDoorBlock::new,
+            ModBlockStateProvider.Generator::trapdoorWithRenderType,
+            metadata -> metadata
+                .tags(tags -> tags.blocks(BlockTags.TRAPDOORS))
+                .lootTable(ModBlockLootTables.Builder::dropSelf)
+                .associatedBlock(Blocks.valueOf("TEST_BLOCK"))
         ),
         /**
          * The TEST_ORE_BLOCK is an ore block that is mineable with a pickaxe and requires an iron tool.
@@ -202,6 +275,15 @@ public final class DumbBlocks {
             this.blockConstructor = () -> blockConstructor.apply(this.metadata.associatedEntity);
         }
 
+        Blocks(NonNullFunction<Blocks, IDumbBlock> blockConstructor, @NotNull UnaryOperator<ModBlockStateProvider.Generator> stateBuilder, @NotNull UnaryOperator<Metadata.Builder> metadata) {
+            this.metadata = metadata.apply(new Metadata.Builder()).build();
+            if (this.metadata.associatedBlock == null) {
+                throw new IllegalStateException("Associated block is required when using this constructor. Call it with Metadata#associatedBlock method.");
+            }
+            this.stateGeneratorOperator = stateBuilder;
+            this.blockConstructor = () -> blockConstructor.apply(this.metadata.associatedBlock);
+        }
+
         /**
          * Returns the {@link Registry} object associated with this block.
          * The {@link Registry} object contains the block and item registry objects for this block.
@@ -264,7 +346,7 @@ public final class DumbBlocks {
      * @param recipeBuilders A list of unary operators that build the recipes for the block.
      * @param associatedEntity The associated entity of the block, if any.
      */
-    public record Metadata(Tags tags, Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders, @Nullable DumbBlockEntities.Entities associatedEntity) {
+    public record Metadata(Tags tags, Function<ModBlockLootTables.Builder, LootTable.@Nullable Builder> lootTableBuilder, List<UnaryOperator<ModRecipeProvider.Builder>> recipeBuilders, @Nullable DumbBlockEntities.Entities associatedEntity, @Nullable DumbBlocks.Blocks associatedBlock, @Nullable UnaryOperator<ModItemModelProvider.Generator> itemModelGenerator) {
         /**
          * A builder class for the {@link Metadata} record.
          * This builder is used to construct an instance of {@link Metadata} with the desired properties.
@@ -286,6 +368,12 @@ public final class DumbBlocks {
              * The associated entity of the block, if any.
              */
             private @Nullable DumbBlockEntities.Entities associatedEntity = null;
+            /**
+             * The associated block of the block, if any.
+             */
+            private @Nullable DumbBlocks.Blocks associatedBlock = null;
+
+            private @Nullable UnaryOperator<ModItemModelProvider.Generator> itemModelGenerator = null;
 
             /**
              * Default constructor for the {@link Builder} class.
@@ -358,6 +446,16 @@ public final class DumbBlocks {
                 return this;
             }
 
+            public Builder associatedBlock(DumbBlocks.Blocks associatedBlock) {
+                this.associatedBlock = associatedBlock;
+                return this;
+            }
+
+            public Builder itemModel(UnaryOperator<ModItemModelProvider.Generator> itemModel) {
+                this.itemModelGenerator = itemModel;
+                return this;
+            }
+
             /**
              * Builds an instance of {@link Metadata} with the properties set in the {@link Builder}.
              *
@@ -368,7 +466,7 @@ public final class DumbBlocks {
                 if (lootTableBuilder == null) {
                     throw new IllegalStateException("Loot table builder is not set");
                 }
-                return new Metadata(tags, lootTableBuilder, recipeBuilders == null ? List.of() : recipeBuilders, associatedEntity);
+                return new Metadata(tags, lootTableBuilder, recipeBuilders == null ? List.of() : recipeBuilders, associatedEntity, associatedBlock, itemModelGenerator);
             }
         }
     }

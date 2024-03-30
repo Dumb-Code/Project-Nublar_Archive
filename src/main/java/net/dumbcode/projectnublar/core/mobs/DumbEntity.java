@@ -1,4 +1,6 @@
 package net.dumbcode.projectnublar.core.mobs;
 
-public interface DumbEntity {
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+
+public interface DumbEntity extends GeoAnimatable {
 }

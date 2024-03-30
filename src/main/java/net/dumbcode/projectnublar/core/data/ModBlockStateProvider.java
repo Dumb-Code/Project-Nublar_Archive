@@ -28,9 +28,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
     public final class Generator {
         private final BlockStateProvider provider;
         private final RegistryObject<Block> block;
+        private final String registerName;
 
-        public Generator(BlockStateProvider provider, RegistryObject<Block> block) {
+        public Generator(BlockStateProvider provider, String registerName, RegistryObject<Block> block) {
             this.provider = provider;
+            this.registerName = registerName;
             this.block = block;
         }
 
@@ -51,7 +53,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return ForgeRegistries.BLOCKS.getKey(block.get());
         }
 
-        public String name() {
+        public @NotNull String name() {
             return key().getPath();
         }
 
@@ -59,7 +61,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return provider.blockTexture(block.get());
         }
 
-        public ResourceLocation extend(ResourceLocation rl, String suffix) {
+        public ResourceLocation blockTexture(DumbBlocks.@NotNull Blocks block) {
+            return provider.blockTexture(block.getRegistry().block().get());
+        }
+
+        @Contract("_, _ -> new")
+        public @NotNull ResourceLocation extend(@NotNull ResourceLocation rl, String suffix) {
             return new ResourceLocation(rl.getNamespace(), rl.getPath() + suffix);
         }
 
@@ -583,6 +590,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return this;
         }
 
+        public Generator doorWithRenderType(String renderType) {
+            if (!(block.get() instanceof DoorBlock doorBlock)) throw new IllegalArgumentException("Block must be a DoorBlock");
+            provider.doorBlockWithRenderType(doorBlock, modLoc("blocks/" + registerName + "_bottom"), modLoc("blocks/" + registerName + "_top"), renderType);
+            return this;
+        }
+
+        public Generator doorWithRenderType() {
+            if (!(block.get() instanceof DoorBlock doorBlock)) throw new IllegalArgumentException("Block must be a DoorBlock");
+            provider.doorBlockWithRenderType(doorBlock, modLoc("blocks/" + registerName + "_bottom"), modLoc("blocks/" + registerName + "_top"), "cutout");
+            return this;
+        }
+
         public Generator doorWithRenderType(String name, ResourceLocation bottom, ResourceLocation top, String renderType) {
             if (!(block.get() instanceof DoorBlock doorBlock)) throw new IllegalArgumentException("Block must be a DoorBlock");
             provider.doorBlockWithRenderType(doorBlock, name, bottom, top, renderType);
@@ -625,6 +644,30 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return this;
         }
 
+        public Generator trapdoorWithRenderType(boolean orientable, String renderType) {
+            if (!(block.get() instanceof TrapDoorBlock trapDoorBlock)) throw new IllegalArgumentException("Block must be a TrapDoorBlock");
+            provider.trapdoorBlockWithRenderType(trapDoorBlock, modLoc("blocks/" + registerName), orientable, renderType);
+            return this;
+        }
+
+        public Generator trapdoorWithRenderType(String renderType) {
+            if (!(block.get() instanceof TrapDoorBlock trapDoorBlock)) throw new IllegalArgumentException("Block must be a TrapDoorBlock");
+            provider.trapdoorBlockWithRenderType(trapDoorBlock, modLoc("blocks/" + registerName), true, renderType);
+            return this;
+        }
+
+        public Generator trapdoorWithRenderType(boolean orientable) {
+            if (!(block.get() instanceof TrapDoorBlock trapDoorBlock)) throw new IllegalArgumentException("Block must be a TrapDoorBlock");
+            provider.trapdoorBlockWithRenderType(trapDoorBlock, modLoc("blocks/" + registerName), orientable, "cutout");
+            return this;
+        }
+
+        public Generator trapdoorWithRenderType() {
+            if (!(block.get() instanceof TrapDoorBlock trapDoorBlock)) throw new IllegalArgumentException("Block must be a TrapDoorBlock");
+            provider.trapdoorBlockWithRenderType(trapDoorBlock, modLoc("blocks/" + registerName), true, "cutout");
+            return this;
+        }
+
         public Generator trapdoorWithRenderType(String name, ResourceLocation texture, boolean orientable, String renderType) {
             if (!(block.get() instanceof TrapDoorBlock trapDoorBlock)) throw new IllegalArgumentException("Block must be a TrapDoorBlock");
             provider.trapdoorBlockWithRenderType(trapDoorBlock, name, texture, orientable, renderType);
@@ -655,7 +698,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         List<DumbBlocks.Blocks> blocks = Arrays.stream(DumbBlocks.Blocks.values()).toList();
         for (DumbBlocks.Blocks block : blocks) {
             UnaryOperator<Generator> stateBuilderOperator = block.getStateGeneratorOperator();
-            Generator generator = new Generator(this, block.getRegistry().block());
+            Generator generator = new Generator(this, block.getRegisterName(), block.getRegistry().block());
             stateBuilderOperator.apply(generator);
         }
     }

@@ -7,6 +7,7 @@ import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntities;
 import net.dumbcode.projectnublar.core.blocks.entity.DumbBlockEntity;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTab;
 import net.dumbcode.projectnublar.core.creativetab.DumbCreativeTabs;
+import net.dumbcode.projectnublar.core.mobs.DumbMob;
 import net.dumbcode.projectnublar.core.mobs.DumbMobs;
 import net.dumbcode.projectnublar.core.exceptions.UtilityClassException;
 import net.dumbcode.projectnublar.core.items.DumbItem;
@@ -14,12 +15,14 @@ import net.dumbcode.projectnublar.core.items.DumbItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidType;
@@ -116,6 +119,17 @@ public class Registrar {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         for (DumbBlockEntities.Entities blockEntity : DumbBlockEntities.Entities.values()) {
             event.registerBlockEntityRenderer(blockEntity.getRegistry().blockEntityType().get(), blockEntity.getRenderer());
+        }
+        for (DumbMobs.Mobs mob : DumbMobs.Mobs.values()) {
+            event.registerEntityRenderer(mob.getRegistry().entityType().get(), mob.getRenderer());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @SubscribeEvent
+    public static void entityAttributes(EntityAttributeCreationEvent event) {
+        for (DumbMobs.Mobs mob : DumbMobs.Mobs.values()) {
+            event.put((EntityType<? extends LivingEntity>) mob.getRegistry().entityType().get(), mob.getAttributeSupplier());
         }
     }
 
